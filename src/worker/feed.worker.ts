@@ -1,6 +1,6 @@
 import { ActionType } from '../enums/enums';
 import { Action, OrderBook, ProductId } from '../models/models';
-import { buildOrderBook } from './helpers';
+import { buildOrderBatch, buildOrderBook } from './helpers';
 
 let socketInstance: WebSocket | null = null;
 let isSubscribed = false;
@@ -42,6 +42,10 @@ const createAndOpenSocket = () => {
       }
       orderBook = buildOrderBook(orderBook, data);
       console.log(orderBook);
+      postMessage({
+        type: ActionType.UPDATE_ORDERBOOK,
+        payload: buildOrderBatch(orderBook, numLevels),
+      });
     }
   };
 };
@@ -90,4 +94,5 @@ const unsubscribe = (productId: ProductId) => {
   const unsubscriptionMessage = { event: 'unsubscribe', feed: 'book_ui_1', product_ids: [productId] };
   socketInstance?.send(JSON.stringify(unsubscriptionMessage));
 };
+// eslint-disable-next-line import/no-anonymous-default-export
 export default {};

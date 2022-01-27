@@ -3,21 +3,21 @@ import { ActionType } from '../enums/enums';
 export interface Snapshot {
   numLevels: number;
   feed: string;
-  bids: number[][];
-  asks: number[][];
+  bids: OrderLevel[];
+  asks: OrderLevel[];
   product_id: ProductId;
 }
 
 export interface Delta {
   feed: string;
-  bids: number[][];
-  asks: number[][];
+  bids: OrderLevel[];
+  asks: OrderLevel[];
   product_id: ProductId;
 }
 
 export interface OrderBook {
-  bids: number[][];
-  asks: number[][];
+  bids: OrderLevel[];
+  asks: OrderLevel[];
 }
 
 export interface OrderRow {
@@ -32,6 +32,9 @@ export interface OrderBatch {
   asks: OrderRow[];
 }
 
+export type Price = number;
+export type Size = number;
+export type OrderLevel = [Price, Size];
 export type ProductId = 'PI_XBTUSD' | 'PI_ETHUSD';
 
 interface OpenSocketAction {

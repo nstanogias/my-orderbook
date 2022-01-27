@@ -29,6 +29,7 @@ const OrderBook: React.FC<Props> = ({ productId }) => {
           break;
         case ActionType.UPDATE_ORDERBOOK:
           //update order book
+          console.log(data.payload);
           break;
       }
     };
