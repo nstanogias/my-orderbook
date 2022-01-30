@@ -55,7 +55,7 @@ export const trimToNumLevels = (dataset: OrderLevel[], numLevels: number): Order
 };
 
 export const removeZeroSizeOrderLevels = (orderLevels: OrderLevel[]): OrderLevel[] => {
-  return orderLevels.filter((orderLevel) => orderLevel[1] != 0);
+  return orderLevels.filter((orderLevel) => orderLevel[1] !== 0);
 };
 
 /*

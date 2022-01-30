@@ -4,15 +4,16 @@ import React, { useEffect, useState, useRef } from 'react';
 // @ts-ignore
 // eslint-disable-next-line import/no-webpack-loader-syntax
 import FeedWorker from 'worker-loader!../../worker/feed.worker';
-import { Action } from '../../models/models';
-import { ActionType } from '../../enums/enums';
+import { Action, OrderBatch, ProductId } from '../../models/models';
+import { ActionType, ProductIds } from '../../enums/enums';
+import Level2Table from '../Level2Table';
+import { ReconnectMessage, Button, Header, Footer } from './styles';
 
-interface Props {
-  productId: string;
-}
-const OrderBook: React.FC<Props> = ({ productId }) => {
+const OrderBook: React.FC = () => {
   let feedWorker = useRef<Worker | null>(null);
   const [showReconnectMessage, setShowReconnectMessage] = useState<boolean>(false);
+  const [orderBatch, setOrderBatch] = useState<OrderBatch>({ bids: [], asks: [] });
+  let productId = useRef<ProductId>(ProductIds.XBTUSD); // this was not working with state because of asynchronous nature!
 
   useEffect(() => {
     feedWorker.current = new FeedWorker();
@@ -25,11 +26,11 @@ const OrderBook: React.FC<Props> = ({ productId }) => {
       const data: Action = ev.data;
       switch (data.type) {
         case ActionType.OPEN_SOCKET_SUCCESS:
-          feedWorker.current?.postMessage({ type: ActionType.SOCKET_SUBSCRIBE, payload: productId });
+          subscribe();
           break;
         case ActionType.UPDATE_ORDERBOOK:
           //update order book
-          console.log(data.payload);
+          setOrderBatch(data.payload);
           break;
       }
     };
@@ -47,9 +48,18 @@ const OrderBook: React.FC<Props> = ({ productId }) => {
   };
 
   const closeSocketConnection = () => {
+    unsubscribe();
     feedWorker.current?.postMessage({
       type: ActionType.CLOSE_SOCKET,
     });
+  };
+
+  const subscribe = () => {
+    feedWorker.current?.postMessage({ type: ActionType.SOCKET_SUBSCRIBE, payload: productId.current });
+  };
+
+  const unsubscribe = () => {
+    feedWorker.current?.postMessage({ type: ActionType.SOCKET_UNSUBSCRIBE, payload: productId.current });
   };
 
   const visibilitychangeHandler = () => {
@@ -65,17 +75,30 @@ const OrderBook: React.FC<Props> = ({ productId }) => {
     setShowReconnectMessage(false);
   };
 
+  const toggleHandler = () => {
+    unsubscribe();
+    const newProductId = productId.current === ProductIds.XBTUSD ? ProductIds.ETHUSD : ProductIds.XBTUSD;
+    productId.current = newProductId;
+    subscribe();
+  };
+
   return (
     <>
-      <div>Orderbook</div>
-      <button onClick={openSocketConnection}>Open connection</button>
-      <button onClick={closeSocketConnection}>Close connection</button>
-      {showReconnectMessage && (
-        <div>
-          <p>You got disconnected. Click the button below to reconnect.</p>
-          <button onClick={reconnectHandler}>Reconnect</button>
-        </div>
-      )}
+      <Header>
+        <div>Orderbook</div>
+        <div>{productId.current}</div>
+      </Header>
+      <Level2Table batch={orderBatch}></Level2Table>
+      <Footer>
+        {showReconnectMessage ? (
+          <>
+            <ReconnectMessage>You got disconnected. Click the button below to reconnect.</ReconnectMessage>
+            <Button onClick={reconnectHandler}>Reconnect</Button>
+          </>
+        ) : (
+          <Button onClick={toggleHandler}>Toggle</Button>
+        )}
+      </Footer>
     </>
   );
 };
