@@ -28,7 +28,7 @@ const Level2Table: React.FC<Props> = ({ batch }) => {
   return (
     <>
       <SpreadRow>
-        Spread: {spread} ({spreadPercentage}%)
+        Spread: {spread.toFixed(2)} ({spreadPercentage}%)
       </SpreadRow>
       <Table>
         <TableSide>
