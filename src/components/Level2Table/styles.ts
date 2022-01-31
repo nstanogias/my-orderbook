@@ -6,6 +6,34 @@ export const Table = styled.div`
   border-top: 1px solid wheat;
 `;
 
+export const TableSide = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+export const TableHeader = styled.div`
+  display: flex;
+  text-transform: uppercase;
+  color: #e6dcdc;
+  padding: 1rem;
+  justify-content: space-between;
+
+  div {
+    padding: 0 2rem;
+  }
+`;
+
+export const TableRow = styled.div`
+  display: flex;
+  color: #e6dcdc;
+  padding: 0.25rem 1rem;
+  justify-content: space-between;
+
+  div {
+    padding: 0 2rem;
+  }
+`;
+
 export const Columns = styled.section`
   text-transform: uppercase;
   display: flex;

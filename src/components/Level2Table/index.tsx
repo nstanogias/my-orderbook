@@ -1,39 +1,61 @@
-import { Fragment } from 'react';
 import { OrderBatch, OrderRow } from '../../models/models';
-import { AskPrice, BidPrice, Columns, Table } from './styles';
+import { AskPrice, BidPrice, Table, TableHeader, TableRow, TableSide } from './styles';
 
 interface Props {
   batch: OrderBatch;
 }
 
+interface RowDepthStyles {
+  background: string;
+}
+
+const calculateRowDepthStyle = (orderRowTotal: number, batchTotal: number, isBid: boolean): RowDepthStyles => {
+  const rowDepth = ((orderRowTotal / batchTotal) * 100).toFixed(2);
+  const side = isBid ? 'to left' : 'to right';
+  const color = isBid ? '#08885d26' : '#d4604826';
+
+  const background = `linear-gradient(${side}, ${color} ${rowDepth}%, transparent ${rowDepth}%)`;
+
+  return { background };
+};
+
 const Level2Table: React.FC<Props> = ({ batch }) => {
+  const batchBidTotal = batch.bids.length > 0 ? batch.bids[batch.bids.length - 1].total : 0;
+  const batchAskTotal = batch.asks.length > 0 ? batch.asks[batch.asks.length - 1].total : 0;
+
   return (
     <>
       <Table>
-        <Columns>
-          <div>Total</div>
-          <div>Size</div>
-          <div>Price</div>
+        <TableSide>
+          <TableHeader>
+            <div>Total</div>
+            <div>Size</div>
+            <div>Price</div>
+          </TableHeader>
+
           {batch.bids.map((row: OrderRow) => (
-            <Fragment key={row.price}>
+            <TableRow key={row.price} style={calculateRowDepthStyle(row.total, batchBidTotal, true)}>
               <div>{row.total.toLocaleString('en')}</div>
               <div>{row.size.toLocaleString('en')}</div>
               <BidPrice>{row.price.toLocaleString('en')}</BidPrice>
-            </Fragment>
+            </TableRow>
           ))}
-        </Columns>
-        <Columns>
-          <div>Price</div>
-          <div>Size</div>
-          <div>Total</div>
+        </TableSide>
+        <TableSide>
+          <TableHeader>
+            <div>Price</div>
+            <div>Size</div>
+            <div>Total</div>
+          </TableHeader>
+
           {batch.asks.map((row: OrderRow) => (
-            <Fragment key={row.price}>
+            <TableRow key={row.price} style={calculateRowDepthStyle(row.total, batchAskTotal, false)}>
               <AskPrice>{row.price.toLocaleString('en')}</AskPrice>
               <div>{row.size.toLocaleString('en')}</div>
               <div>{row.total.toLocaleString('en')}</div>
-            </Fragment>
+            </TableRow>
           ))}
-        </Columns>
+        </TableSide>
       </Table>
     </>
   );
