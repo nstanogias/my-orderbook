@@ -99,7 +99,7 @@ const OrderBook: React.FC = () => {
                 <Button onClick={reconnectHandler}>Reconnect</Button>
               </>
             ) : (
-              <Button onClick={toggleHandler}>Toggle</Button>
+              <Button onClick={toggleHandler}>Toggle Feed</Button>
             )}
           </Footer>
         </>
