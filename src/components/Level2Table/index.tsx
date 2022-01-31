@@ -1,5 +1,5 @@
 import { OrderBatch, OrderRow } from '../../models/models';
-import { AskPrice, BidPrice, SpreadRow, Table, TableHeader, TableRow, TableSide } from './styles';
+import { AskPrice, BidPrice, SpreadRow, Table, TableHeader, BidRow, AskRow, TableSide } from './styles';
 
 interface Props {
   batch: OrderBatch;
@@ -20,8 +20,8 @@ const calculateRowDepthStyle = (orderRowTotal: number, batchTotal: number, isBid
 };
 
 const Level2Table: React.FC<Props> = ({ batch }) => {
-  const batchBidTotal = batch.bids.length > 0 ? batch.bids[batch.bids.length - 1].total : 0;
-  const batchAskTotal = batch.asks.length > 0 ? batch.asks[batch.asks.length - 1].total : 0;
+  const batchBidTotal = batch.bids[batch.bids.length - 1].total;
+  const batchAskTotal = batch.asks[batch.asks.length - 1].total;
   const spread = batch.asks[0].price - batch.bids[0].price;
   const spreadPercentage = ((spread / batch.asks[0].price) * 100).toFixed(2);
 
@@ -32,21 +32,21 @@ const Level2Table: React.FC<Props> = ({ batch }) => {
       </SpreadRow>
       <Table>
         <TableSide>
-          <TableHeader>
+          <TableHeader hideInMobile={true}>
             <div>Total</div>
             <div>Size</div>
             <div>Price</div>
           </TableHeader>
 
           {batch.bids.map((row: OrderRow) => (
-            <TableRow key={row.price} style={calculateRowDepthStyle(row.total, batchBidTotal, true)}>
+            <BidRow key={row.price} style={calculateRowDepthStyle(row.total, batchBidTotal, true)}>
               <div>{row.total.toLocaleString('en')}</div>
               <div>{row.size.toLocaleString('en')}</div>
               <BidPrice>{row.price.toLocaleString('en')}</BidPrice>
-            </TableRow>
+            </BidRow>
           ))}
         </TableSide>
-        <TableSide>
+        <TableSide isAsk={true}>
           <TableHeader>
             <div>Price</div>
             <div>Size</div>
@@ -54,11 +54,11 @@ const Level2Table: React.FC<Props> = ({ batch }) => {
           </TableHeader>
 
           {batch.asks.map((row: OrderRow) => (
-            <TableRow key={row.price} style={calculateRowDepthStyle(row.total, batchAskTotal, false)}>
+            <AskRow key={row.price} style={calculateRowDepthStyle(row.total, batchAskTotal, false)}>
               <AskPrice>{row.price.toLocaleString('en')}</AskPrice>
               <div>{row.size.toLocaleString('en')}</div>
               <div>{row.total.toLocaleString('en')}</div>
-            </TableRow>
+            </AskRow>
           ))}
         </TableSide>
       </Table>

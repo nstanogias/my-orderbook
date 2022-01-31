@@ -82,23 +82,28 @@ const OrderBook: React.FC = () => {
     subscribe();
   };
 
+  const orderBatchNotEmpty = orderBatch.bids.length > 0 && orderBatch.asks.length > 0;
   return (
     <>
       <Header>
         <div>Orderbook</div>
         <div>{productId.current}</div>
       </Header>
-      <Level2Table batch={orderBatch}></Level2Table>
-      <Footer>
-        {showReconnectMessage ? (
-          <>
-            <ReconnectMessage>You got disconnected. Click the button below to reconnect.</ReconnectMessage>
-            <Button onClick={reconnectHandler}>Reconnect</Button>
-          </>
-        ) : (
-          <Button onClick={toggleHandler}>Toggle</Button>
-        )}
-      </Footer>
+      {orderBatchNotEmpty && (
+        <>
+          <Level2Table batch={orderBatch}></Level2Table>
+          <Footer>
+            {showReconnectMessage ? (
+              <>
+                <ReconnectMessage>You got disconnected. Click the button below to reconnect.</ReconnectMessage>
+                <Button onClick={reconnectHandler}>Reconnect</Button>
+              </>
+            ) : (
+              <Button onClick={toggleHandler}>Toggle</Button>
+            )}
+          </Footer>
+        </>
+      )}
     </>
   );
 };
