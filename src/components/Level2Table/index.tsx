@@ -1,5 +1,5 @@
 import { OrderBatch, OrderRow } from '../../models/models';
-import { AskPrice, BidPrice, Table, TableHeader, TableRow, TableSide } from './styles';
+import { AskPrice, BidPrice, SpreadRow, Table, TableHeader, TableRow, TableSide } from './styles';
 
 interface Props {
   batch: OrderBatch;
@@ -22,9 +22,14 @@ const calculateRowDepthStyle = (orderRowTotal: number, batchTotal: number, isBid
 const Level2Table: React.FC<Props> = ({ batch }) => {
   const batchBidTotal = batch.bids.length > 0 ? batch.bids[batch.bids.length - 1].total : 0;
   const batchAskTotal = batch.asks.length > 0 ? batch.asks[batch.asks.length - 1].total : 0;
+  const spread = batch.asks[0].price - batch.bids[0].price;
+  const spreadPercentage = ((spread / batch.asks[0].price) * 100).toFixed(2);
 
   return (
     <>
+      <SpreadRow>
+        Spread: {spread} ({spreadPercentage}%)
+      </SpreadRow>
       <Table>
         <TableSide>
           <TableHeader>

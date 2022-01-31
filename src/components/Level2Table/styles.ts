@@ -34,17 +34,10 @@ export const TableRow = styled.div`
   }
 `;
 
-export const Columns = styled.section`
-  text-transform: uppercase;
-  display: flex;
-  justify-content: center;
-  display: grid;
-  position: relative;
-  grid-template-columns: repeat(3, 1fr);
-  grid-row-gap: 8px;
-  grid-column-gap: 40px;
-  padding: 1rem;
-  color: #e6dcdc;
+export const SpreadRow = styled.div`
+  text-align: center;
+  margin-bottom: 0.5rem;
+  color: darkcyan;
 `;
 
 export const BidPrice = styled.div`

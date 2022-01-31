@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export const Header = styled.div`
   display: flex;
   justify-content: space-between;
-  padding: 1rem;
+  padding: 1rem 1rem 0.25rem 1rem;
   color: wheat;
 `;
 export const Button = styled.button`
