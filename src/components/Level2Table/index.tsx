@@ -11,7 +11,7 @@ interface RowDepthStyles {
 
 const calculateRowDepthStyle = (orderRowTotal: number, batchTotal: number, isBid: boolean): RowDepthStyles => {
   const rowDepth = ((orderRowTotal / batchTotal) * 100).toFixed(2);
-  const side = isBid ? 'to left' : 'to right';
+  const side = isBid ? (window.innerWidth < 500 ? 'to right' : 'to left') : 'to right';
   const color = isBid ? '#08885d26' : '#d4604826';
 
   const background = `linear-gradient(${side}, ${color} ${rowDepth}%, transparent ${rowDepth}%)`;
